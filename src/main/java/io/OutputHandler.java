@@ -1,4 +1,4 @@
-package iohandler;
+package io;
 
 public class OutputHandler {
 

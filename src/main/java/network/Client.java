@@ -12,32 +12,21 @@ import payload.AbstractAction;
 import user.User;
 
 public class Client {
-	public static void main(String args[]) throws JsonProcessingException{
-		User user = new User("192.168.0.1","Joao");
-		ObjectMapper mapper = new ObjectMapper();
-		
-		
-		System.out.println(mapper.writeValueAsString(user));
-	}
 	
-	public static void sendBroadcastMessage(AbstractAction action){
+	public static void sendBroadcastMessage(String json){
 		
 	}
 	
-	public static void sendMulticastMessage(AbstractAction action){
+	public static void sendMulticastMessage(String json){
 		
 	}
 	
-	public static void sendMessageToIp(AbstractAction action){
-		sendMessage(action, "");
-	}
-	
-	private static void sendMessage(AbstractAction action, String ip){
+	public static void sendMessageToIp(String ip, String json){
 		try {
 			Socket socket = new Socket(ip, 9000);
 			
 			DataOutputStream output = new DataOutputStream(socket.getOutputStream());
-			output.writeUTF(action.send());
+			output.writeUTF(json);
 			
 			output.close();
 			
@@ -46,8 +35,6 @@ public class Client {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
 	}
 	
 }

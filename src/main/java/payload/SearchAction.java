@@ -2,30 +2,27 @@ package payload;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-import iohandler.OutputHandler;
+import io.OutputHandler;
+import network.Client;
 import user.User;
 import user.UserManager;
 
 public class SearchAction extends AbstractAction {
-	public String address;
 	public String nickname;
-	
+
 	@Override
-	public void receive() {
-		
-		if(UserManager.findByAddress(address) != null){
-			User user = new User(address, nickname);
-			UserManager.replace(user);
-			
+	public void receive(String senderIp) {
+
+		User user = new User(senderIp, nickname);
+		if (UserManager.insert(user)) {
 			OutputHandler.out(user.getNickname() + " entrou na sala");
 		}
-		
+
 	}
-	
+
 	@Override
-	public String send() throws JsonProcessingException {
-		return toJson();
+	public void send() throws JsonProcessingException {
+		Client.sendBroadcastMessage(toJson());
 	}
-	
-	
+
 }

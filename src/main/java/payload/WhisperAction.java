@@ -1,21 +1,23 @@
 package payload;
 
-import iohandler.OutputHandler;
-import network.Server;
+import exception.UnknownUserException;
+import io.OutputHandler;
+import main.Application;
 import user.User;
 import user.UserManager;
 
-public class WhisperAction extends AbstractAction{
-	public String address;
+public class WhisperAction extends AbstractTargetedAction{
+
 	public String content;
 	
 	@Override
-	public void receive() {
-		User user = UserManager.findByAddress(address);
+	public void receive(String senderIp) throws UnknownUserException {
+		User user = UserManager.findByAddress(senderIp);
 		
-		//TODO tratar user not found
+		if(user == null){
+			throw new UnknownUserException();
+		}
 		
-		OutputHandler.out(user.getNickname() + " sussura para " + Server.getNickname() + ": " + content);
+		OutputHandler.out(user.getNickname() + " sussura para " + Application.getNickname() + ": " + content);
 	}
-	
 }

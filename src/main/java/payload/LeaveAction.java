@@ -2,7 +2,9 @@ package payload;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-import iohandler.OutputHandler;
+import exception.UnknownUserException;
+import io.OutputHandler;
+import network.Client;
 import user.User;
 import user.UserManager;
 
@@ -11,17 +13,21 @@ public class LeaveAction extends AbstractAction {
 	public String address;
 	
 	@Override
-	public void receive() {
-		User user = UserManager.findByAddress(address);
+	public void receive(String senderIp) throws UnknownUserException {
+		User user = UserManager.findByAddress(senderIp);
 		
-		UserManager.removeByAddress(address);
+		if(user == null){
+			throw new UnknownUserException();
+		}
+		
+		UserManager.removeByAddress(senderIp);
 		
 		OutputHandler.out(user.getNickname() + " saiu da sala.");
 	}
 
 	@Override
-	public String send() throws JsonProcessingException {
-		return toJson();
+	public void send() throws JsonProcessingException {
+		Client.sendMulticastMessage(toJson());
 	}
 
 }
