@@ -27,15 +27,7 @@ public class UserManager {
 		
 		return true;
 	}
-	
-	public static void replace(User user) {
-		removeByAddress(user.getAddress());
-		
-		users.add(user);
-		
-		OutputHandler.log("Added user " + user.getAddress() + " " + user.getNickname() + " to list.");
-	}
-	
+
 	public static User findByAddress(String address) {
 		Iterator<User> i = users.iterator();
 		
@@ -78,5 +70,9 @@ public class UserManager {
 	
 	public static int getNumberOfUsers(){
 		return users.toArray().length;
+	}
+	
+	public static User[] getArray(){
+		return users.toArray(new User[users.size()]);
 	}
 }

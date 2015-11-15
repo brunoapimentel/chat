@@ -2,30 +2,39 @@ package automated;
 
 import java.util.concurrent.TimeUnit;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-
+import action.ActionBuilder;
 import io.OutputHandler;
 import main.Application;
-import payload.SayAction;
+import payload.AbstractAction;
+import payload.AbstractTargetedAction;
 import user.User;
 import user.UserManager;
 
 public class Robot implements Runnable {
 	
 	private String[] messages = {
-		"Olá gatinha!",
-		"Como você é tchuca!",
-		"Ooo lá em casa hein?"
+		"{\"action\":\"whisper\",\"content\":\"Olá gatinha\",\"target\":\"RANDOM\"}!",
+		"{\"action\":\"say\",\"content\":\"Sinta o poder do lado negro da Força!\"}!",
+		"{\"action\":\"say\",\"content\":\"A Força é poderosa em você!\",\"target\":\"RANDOM\"}!",
+		"{\"action\":\"whisper\",\"content\":\"Eu acho sua falta de fé algo perturbador!\",\"target\":\"RANDOM\"}!",
+		"{\"action\":\"whisper\",\"content\":\"Vai me deixar no vácuo mesmo?\",\"target\":\"RANDOM\"}!",
+		"{\"action\":\"say\",\"content\":\"Preciso lustrar a armadura...\"}!",
+		"{\"action\":\"say\",\"content\":\"Que sala mais tediosa...\"}!",
+		"{\"action\":\"say\",\"content\":\"As multas da Estrela da Morte já passaram de R$ 2.000,00!\",\"target\":\"RANDOM\"}!",
+		"{\"action\":\"say\",\"content\":\"Zuom! *ativa o sabre de luz*\"}!",
+		"{\"action\":\"say\",\"content\":\"Não... Eu sou seu pai!\", \"target\":\"RANDOM\"}!",
+		"{\"action\":\"say\",\"content\":\"Daqui a pouco tô saindo... Jogar um Battlefront :)\", \"target\":\"RANDOM\"}!",
+		"{\"action\":\"say\",\"content\":\"Consegue imaginar porque eu nunca como feijão?\", \"target\":\"RANDOM\"}!",
 	};
 	
-	private String getRandomMessage(){
+	private String getRandomAction(){
 		int random = getRandomNumber(messages.length) - 1;
 		
 		if(messages[random] != null){
 			return messages[random];
 		}
 		
-		return getRandomMessage();
+		return getRandomAction();
 	}
 	
 	private User getRandomUser(){
@@ -44,20 +53,27 @@ public class Robot implements Runnable {
 
 	public void run() {
 		User user;
-		SayAction action = new SayAction();
-		
+
 		while(true){
 			user = getRandomUser();
 			
 			if(user != null){
-				action.target = user.getAddress();
-				action.content = getRandomMessage();
+				String json = getRandomAction();
+				
+				json = json.replace("RANDOM", user.getAddress());
 				
 				try {
-					OutputHandler.log("Sending message: '" + getRandomMessage() + "' to " + user.getAddress());
-					action.send();
-				} catch (JsonProcessingException e) {
-					// TODO Auto-generated catch block
+					AbstractAction action = ActionBuilder.buildFromJson(json);
+					
+					if(action.getClass().getName().equals("payload.WhisperAction")){
+						AbstractTargetedAction targetedAction = (AbstractTargetedAction) action;
+						targetedAction.setTargetIp(user.getAddress());
+						targetedAction.send();
+					}else{
+						action.send();
+					}
+					
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}

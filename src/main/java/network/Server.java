@@ -1,10 +1,13 @@
 package network;
 
+import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.SocketException;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 import action.ActionBuilder;
 import exception.UnknownUserException;
@@ -18,32 +21,49 @@ public class Server implements Runnable {
 	public void run() {
 		OutputHandler.log("Starting server on port " + Application.getPort());
 
-		try {
-			int port = Application.getPort();
-
-			DatagramSocket dsocket = new DatagramSocket(port);
+		
+			DatagramSocket dsocket;
+			try {
+				dsocket = new DatagramSocket(Application.getPort());
+			} catch (SocketException e) {
+				OutputHandler.error("Erro ao abrir socket");
+				e.printStackTrace();
+				Application.halt();
+				return;
+			}
 
 			byte[] buffer = new byte[2048];
 
 			DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 
 			while (true) {
-				dsocket.receive(packet);
+				try {
+					dsocket.receive(packet);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 
 				String message = new String(buffer, 0, packet.getLength());
-				OutputHandler.log("Received from " + packet.getAddress().getHostName() + ": " + message );
+				OutputHandler.log("Received from " + packet.getAddress().getHostAddress() + ": " + message );
 				
-				ActionBuilder.buildFromJson(message).receive(packet.getAddress().getHostAddress());			
+				try {
+					ActionBuilder.buildFromJson(message).receive(packet.getAddress().getHostAddress());
+				} catch (JsonParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (JsonMappingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (UnknownUserException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}			
 			}
-		} catch (UnknownUserException e) {
-			OutputHandler.log("Recebido mensagem de um usuário desconhecido:");
-			e.printStackTrace();
-		} catch (JsonParseException e) {
-			reportError("JSON mal formado");
-		} catch (Exception e) {
-			OutputHandler.log("Um erro ocorreu:");
-			e.printStackTrace();
-		}
+		
 
 	}
 	

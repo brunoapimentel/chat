@@ -3,6 +3,7 @@ package payload;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import io.OutputHandler;
+import main.Application;
 import network.Client;
 import user.User;
 import user.UserManager;
@@ -12,10 +13,22 @@ public class SearchAction extends AbstractAction {
 
 	@Override
 	public void receive(String senderIp) {
-
+		if(senderIp.equals(Application.getIp())){
+			return;
+		}
+		
 		User user = new User(senderIp, nickname);
 		if (UserManager.insert(user)) {
 			OutputHandler.out(user.getNickname() + " entrou na sala");
+		}
+		
+		ReplyAction replyAction = new ReplyAction();
+		replyAction.setTargetIp(senderIp);
+		replyAction.nickname = Application.getNickname();
+		try {
+			replyAction.send();
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
 		}
 
 	}

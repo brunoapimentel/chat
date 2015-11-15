@@ -14,8 +14,6 @@ public class ReplyAction extends AbstractTargetedAction {
 
 		if (UserManager.insert(user)) {
 			OutputHandler.out(user.getNickname() + " entrou na sala");
-		}else{
-			UserManager.replace(user);
 		}
 
 	}

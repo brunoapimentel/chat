@@ -15,6 +15,7 @@ public class SayAction extends AbstractAction {
 	
 	@Override
 	public void receive(String senderIp) throws UnknownUserException  {
+		System.out.println(senderIp);
 		User user = UserManager.findByAddress(senderIp);
 		
 		if(user == null){

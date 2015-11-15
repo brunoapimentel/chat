@@ -34,6 +34,7 @@ public class SearchController implements Runnable {
 
 	public void seekUsers() throws InterruptedException{
 		SearchAction searchAction = new SearchAction();
+		searchAction.nickname = Application.getNickname();
 
 		while (UserManager.listIsEmpty()) {
 			try {
@@ -49,7 +50,8 @@ public class SearchController implements Runnable {
 	
 	public void maintainUserList() throws InterruptedException{
 		SearchAction searchAction = new SearchAction();
-
+		searchAction.nickname = Application.getNickname();
+		
 		while (! UserManager.listIsEmpty()) {
 			try {
 				searchAction.send();

@@ -1,40 +1,55 @@
 package network;
 
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.net.Socket;
-import java.net.UnknownHostException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import payload.AbstractAction;
+import io.OutputHandler;
+import main.Application;
 import user.User;
+import user.UserManager;
 
 public class Client {
-	
-	public static void sendBroadcastMessage(String json){
-		
-	}
-	
-	public static void sendMulticastMessage(String json){
-		
-	}
-	
-	public static void sendMessageToIp(String ip, String json){
+
+	public static void sendBroadcastMessage(String json) {
 		try {
-			Socket socket = new Socket(ip, 9000);
+			DatagramSocket socket = new DatagramSocket();
+
+			DatagramPacket packet = new DatagramPacket(json.getBytes(), json.getBytes().length, InetAddress.getByName(Application.getBroadcastIp()), 9000);
+
+			OutputHandler.log("Sending broadcast: " + json + " to: " + Application.getBroadcastIp());
 			
-			DataOutputStream output = new DataOutputStream(socket.getOutputStream());
-			output.writeUTF(json);
+			socket.setBroadcast(true);
 			
-			output.close();
-			
+			socket.send(packet);
 			socket.close();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			OutputHandler.log("Um erro ocorreu: ");
 			e.printStackTrace();
 		}
 	}
-	
+
+	public static void sendMulticastMessage(String json) {
+		for (User user : UserManager.getArray()) {
+			sendMessageToIp(user.getAddress(), json);
+		}
+	}
+
+	public static void sendMessageToIp(String ip, String json) {
+		try {
+			DatagramSocket socket = new DatagramSocket();
+
+			DatagramPacket packet = new DatagramPacket(json.getBytes(), json.getBytes().length, InetAddress.getByName(ip), 9000);
+
+			OutputHandler.log("Sending: " + json + " to: " + Application.getBroadcastIp());
+			
+
+			socket.send(packet);
+			socket.close();
+		} catch (Exception e) {
+			OutputHandler.log("Um erro ocorreu: ");
+			e.printStackTrace();
+		}
+	}
+
 }

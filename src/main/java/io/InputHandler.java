@@ -3,6 +3,10 @@ package io;
 import java.util.Scanner;
 
 import action.ActionBuilder;
+import payload.AbstractAction;
+import payload.AbstractTargetedAction;
+import user.User;
+import user.UserManager;
 
 public class InputHandler implements Runnable{
 
@@ -29,10 +33,19 @@ public class InputHandler implements Runnable{
 		
 		OutputHandler.log("User input: " + input);
 		
-		String[] args = input.split(" && ");
+		User user = UserManager.getUserAtIndex(0);
 		
 		try {
-			ActionBuilder.buildFromJson(args[0]).send();
+			OutputHandler.log("Sending message: '" + input + "' to " + user.getAddress());
+			AbstractAction action = ActionBuilder.buildFromJson(input);
+			
+			if(action.getClass().getName().equals("payload.WhisperAction")){
+				AbstractTargetedAction targetedAction = (AbstractTargetedAction) action;
+				targetedAction.setTargetIp(user.getAddress());
+				targetedAction.send();
+			}else{
+				action.send();
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
