@@ -2,10 +2,10 @@ package payload;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-import exception.UnknownUserException;
 import io.OutputHandler;
 import main.Application;
 import network.Client;
+import user.UnknownUser;
 import user.User;
 import user.UserManager;
 
@@ -14,12 +14,12 @@ public class SayAction extends AbstractAction {
 	public String content;
 	
 	@Override
-	public void receive(String senderIp) throws UnknownUserException  {
+	public void receive(String senderIp) {
 		System.out.println(senderIp);
 		User user = UserManager.findByAddress(senderIp);
 		
 		if(user == null){
-			throw new UnknownUserException();
+			user = new UnknownUser(senderIp);
 		}
 		
 		if(target == null){
@@ -27,14 +27,14 @@ public class SayAction extends AbstractAction {
 		}else{
 			User targetUser;
 			
-			if(target == Application.getIp()){
-				targetUser = new User("", "VOCÊ");
+			if(target.equals(Application.getUser().getAddress())){
+				targetUser = Application.getUser();
 			}else{
 				targetUser = UserManager.findByAddress(target);
 			}
 			
 			if(targetUser == null){
-				throw new UnknownUserException();
+				targetUser = new UnknownUser(target);
 			}
 			
 			OutputHandler.out(user.getNickname() + " diz à "+ targetUser.getNickname() +": " + content);
@@ -43,7 +43,25 @@ public class SayAction extends AbstractAction {
 	
 	@Override
 	public void send() throws JsonProcessingException{
-		Client.sendMulticastMessage(toJson());		
+		Client.sendMulticastMessage(toJson());
+		
+		if(target == null){
+			OutputHandler.out(Application.getUser().getNickname() + " diz à todos: " + content);
+		}else{
+			User targetUser;
+			
+			if(target.equals(Application.getUser().getAddress())){
+				targetUser = Application.getUser();
+			}else{
+				targetUser = UserManager.findByAddress(target);
+			}
+			
+			if(targetUser == null){
+				targetUser = new UnknownUser(target);
+			}
+			
+			OutputHandler.out(Application.getUser().getNickname() + " diz à "+ targetUser.getNickname() +": " + content);
+		}
 	}
 
 }

@@ -10,10 +10,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 import action.ActionBuilder;
-import exception.UnknownUserException;
 import io.OutputHandler;
 import main.Application;
-import payload.ReplyAction;
 import payload.ReportAction;
 
 public class Server implements Runnable {
@@ -26,8 +24,7 @@ public class Server implements Runnable {
 			try {
 				dsocket = new DatagramSocket(Application.getPort());
 			} catch (SocketException e) {
-				OutputHandler.error("Erro ao abrir socket");
-				e.printStackTrace();
+				OutputHandler.error("Erro ao abrir socket",e);
 				Application.halt();
 				return;
 			}
@@ -40,7 +37,7 @@ public class Server implements Runnable {
 				try {
 					dsocket.receive(packet);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
+					OutputHandler.error("Um erro ocorreu");
 					e.printStackTrace();
 				}
 
@@ -50,17 +47,11 @@ public class Server implements Runnable {
 				try {
 					ActionBuilder.buildFromJson(message).receive(packet.getAddress().getHostAddress());
 				} catch (JsonParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					reportError("JSON mal formado!");
 				} catch (JsonMappingException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (UnknownUserException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					reportError("Não foi possível mapear o JSON!");
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					OutputHandler.error("Um erro ocorreu", e);
 				}			
 			}
 		
@@ -74,7 +65,7 @@ public class Server implements Runnable {
 		try {
 			reportAction.send();
 		} catch (JsonProcessingException e) {
-			e.printStackTrace();
+			OutputHandler.error("Um erro ocorreu", e);
 		}
 	}
 }

@@ -1,6 +1,9 @@
 package payload;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import io.OutputHandler;
+import network.Client;
 import user.User;
 import user.UserManager;
 
@@ -16,5 +19,10 @@ public class ReplyAction extends AbstractTargetedAction {
 			OutputHandler.out(user.getNickname() + " entrou na sala");
 		}
 
+	}
+	
+	@Override
+	public void send() throws JsonProcessingException {
+		Client.sendMessageToIp(targetIp, toJson());
 	}
 }

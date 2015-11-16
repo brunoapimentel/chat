@@ -9,7 +9,7 @@ import main.Application;
 import payload.SearchAction;
 import user.UserManager;
 
-public class SearchController implements Runnable {
+public class SearchRepeater implements Runnable {
 
 	public void run() {
 		while (true) {
@@ -17,7 +17,7 @@ public class SearchController implements Runnable {
 				try {
 					seekUsers();
 				} catch (InterruptedException e) {
-					e.printStackTrace();
+					OutputHandler.error("Um erro ocorreu", e);
 					Application.halt();
 				}
 			}else{
@@ -34,7 +34,7 @@ public class SearchController implements Runnable {
 
 	public void seekUsers() throws InterruptedException{
 		SearchAction searchAction = new SearchAction();
-		searchAction.nickname = Application.getNickname();
+		searchAction.nickname = Application.getUser().getNickname();
 
 		while (UserManager.listIsEmpty()) {
 			try {
@@ -50,7 +50,7 @@ public class SearchController implements Runnable {
 	
 	public void maintainUserList() throws InterruptedException{
 		SearchAction searchAction = new SearchAction();
-		searchAction.nickname = Application.getNickname();
+		searchAction.nickname = Application.getUser().getNickname();
 		
 		while (! UserManager.listIsEmpty()) {
 			try {

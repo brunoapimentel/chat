@@ -4,6 +4,10 @@ public class User {
 	private String nickname;
 	private String address;
 	
+	public User(){
+		
+	}
+	
 	public User(String address, String nickname) {
 		this.address = address;
 		this.nickname = nickname;

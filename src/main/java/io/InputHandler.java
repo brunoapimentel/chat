@@ -47,8 +47,7 @@ public class InputHandler implements Runnable{
 				action.send();
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			OutputHandler.error("Um erro ocorreu", e);
 		}
 		
 		return true;

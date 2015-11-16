@@ -3,10 +3,11 @@ package main;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import automated.Robot;
-import automated.SearchController;
+import automated.SearchRepeater;
 import io.InputHandler;
 import io.OutputHandler;
 import network.Server;
+import user.User;
 
 public class Application {
 	
@@ -15,10 +16,10 @@ public class Application {
 	private static Thread searcher;
 	
 	public static void main(String args[]) throws JsonProcessingException{
-		//client = new Thread(new InputHandler());
-		client = new Thread(new Robot());
+		client = new Thread(new InputHandler());
+		//client = new Thread(new Robot());
 		server = new Thread(new Server());
-		searcher = new Thread(new SearchController());
+		searcher = new Thread(new SearchRepeater());
 		
 		if(! Config.init(args) ){
 			return;
@@ -42,16 +43,12 @@ public class Application {
 		return Config.port;
 	}
 	
-	public static String getNickname(){
-		return Config.nickname;
-	}
-	
-	public static String getIp(){
-		return Config.ip;
+	public static User getUser(){
+		return Config.user;
 	}
 	
 	public static String getBroadcastIp(){
-		String[] ipParts = Application.getIp().split("\\.");
+		String[] ipParts = Config.user.getAddress().split("\\.");
 		
 		return ipParts[0] + "." + ipParts[1] + "." + ipParts[2] + ".255";
 	}
@@ -61,24 +58,25 @@ public class Application {
 	}
 	
 	public static class Config{
-		private static String ip;
+		private static User user;
 		private static int port;
-		private static String nickname;
 		private static int logLevel;
 		
 		private static boolean init(String[] args){
 
+			Config.user = new User();
+			
 			if(args.length >= 1){
-				Config.ip = args[0];
+				Config.user.setAddress(args[0]);
 			}else{
 				OutputHandler.log("É necessário informar um ip");
 				return false;
 			}
 			
 			if(args.length >= 2){
-				Config.nickname = args[1];
+				Config.user.setNickname(args[1]);
 			}else{
-				Config.nickname = "Vader";
+				Config.user.setNickname("Vader");
 			}
 			
 			if(args.length >= 3){

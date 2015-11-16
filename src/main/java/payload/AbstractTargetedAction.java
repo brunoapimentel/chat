@@ -16,11 +16,6 @@ public abstract class AbstractTargetedAction extends AbstractAction {
 		this.targetIp = targetIp;
 	}
 	
-	@Override
-	public void send() throws JsonProcessingException {
-		Client.sendMessageToIp(targetIp, toJson());
-	}
-	
 	public void setTargetIp(String targetIp){
 		this.targetIp = targetIp;
 	}

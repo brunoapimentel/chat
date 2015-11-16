@@ -24,8 +24,7 @@ public class Client {
 			socket.send(packet);
 			socket.close();
 		} catch (Exception e) {
-			OutputHandler.log("Um erro ocorreu: ");
-			e.printStackTrace();
+			OutputHandler.error("Um erro ocorreu", e);
 		}
 	}
 
@@ -47,8 +46,7 @@ public class Client {
 			socket.send(packet);
 			socket.close();
 		} catch (Exception e) {
-			OutputHandler.log("Um erro ocorreu: ");
-			e.printStackTrace();
+			OutputHandler.error("Um erro ocorreu", e);
 		}
 	}
 

@@ -13,7 +13,7 @@ public class SearchAction extends AbstractAction {
 
 	@Override
 	public void receive(String senderIp) {
-		if(senderIp.equals(Application.getIp())){
+		if(senderIp.equals(Application.getUser().getAddress())){
 			return;
 		}
 		
@@ -24,11 +24,11 @@ public class SearchAction extends AbstractAction {
 		
 		ReplyAction replyAction = new ReplyAction();
 		replyAction.setTargetIp(senderIp);
-		replyAction.nickname = Application.getNickname();
+		replyAction.nickname = Application.getUser().getNickname();
 		try {
 			replyAction.send();
 		} catch (JsonProcessingException e) {
-			e.printStackTrace();
+			OutputHandler.error("Um erro ocorreu", e);
 		}
 
 	}

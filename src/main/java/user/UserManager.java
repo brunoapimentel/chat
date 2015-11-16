@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.omg.CosNaming.NamingContextPackage.NotFound;
-
-import exception.UnknownUserException;
 import io.OutputHandler;
 
 public class UserManager {

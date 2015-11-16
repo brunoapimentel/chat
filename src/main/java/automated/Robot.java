@@ -81,7 +81,7 @@ public class Robot implements Runnable {
 			try {
 				TimeUnit.SECONDS.sleep(5);
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				OutputHandler.error("Um erro ocorreu", e);
 				Application.halt();
 			}
 		}
