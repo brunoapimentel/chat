@@ -48,14 +48,14 @@ public class Server implements Runnable {
 					AbstractAction action = ActionBuilder.buildFromJson(message);
 					
 					if(action == null){
-						reportError("Ação inválida!");
+						reportError("Ação inválida!", packet.getAddress().getHostAddress());
 					}
 					
 					action.receive(packet.getAddress().getHostAddress());
 				} catch (JsonParseException e) {
-					reportError("JSON mal formado!");
+					reportError("JSON mal formado!", packet.getAddress().getHostAddress());
 				} catch (JsonMappingException e) {
-					reportError("Não foi possível mapear o JSON!");
+					reportError("Não foi possível mapear o JSON!", packet.getAddress().getHostAddress());
 				} catch (IOException e) {
 					dsocket.close();
 					OutputHandler.error("Um erro ocorreu", e);
@@ -64,9 +64,10 @@ public class Server implements Runnable {
 
 	}
 	
-	private void reportError(String message){
+	private void reportError(String message, String senderIp){
 		ReportAction reportAction = new ReportAction();
 		reportAction.message = message;
+		reportAction.setTargetIp(senderIp);
 		
 		try {
 			reportAction.send();
