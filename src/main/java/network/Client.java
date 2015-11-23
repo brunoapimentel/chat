@@ -15,7 +15,7 @@ public class Client {
 		try {
 			DatagramSocket socket = new DatagramSocket();
 
-			DatagramPacket packet = new DatagramPacket(json.getBytes(), json.getBytes().length, InetAddress.getByName(Application.getBroadcastIp()), 9000);
+			DatagramPacket packet = new DatagramPacket(json.getBytes(), json.getBytes().length, InetAddress.getByName(Application.getBroadcastIp()), Application.getPort());
 
 			OutputHandler.log("Sending broadcast: " + json + " to: " + Application.getBroadcastIp());
 			
@@ -38,9 +38,9 @@ public class Client {
 		try {
 			DatagramSocket socket = new DatagramSocket();
 
-			DatagramPacket packet = new DatagramPacket(json.getBytes(), json.getBytes().length, InetAddress.getByName(ip), 9000);
+			DatagramPacket packet = new DatagramPacket(json.getBytes(), json.getBytes().length, InetAddress.getByName(ip), Application.getPort());
 
-			OutputHandler.log("Sending: " + json + " to: " + Application.getBroadcastIp());
+			OutputHandler.log("Sending: " + json + " to: " + ip);
 			
 
 			socket.send(packet);

@@ -1,5 +1,7 @@
 package payload;
 
+import java.security.InvalidParameterException;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import io.OutputHandler;
@@ -9,7 +11,7 @@ import user.UnknownUser;
 import user.User;
 import user.UserManager;
 
-public class WhisperAction extends AbstractTargetedAction{
+public class WhisperAction extends AbstractAction{
 
 	public String content;
 	
@@ -26,6 +28,10 @@ public class WhisperAction extends AbstractTargetedAction{
 	
 	@Override
 	public void send() throws JsonProcessingException {
+		if(targetIp == null){
+			throw new InvalidParameterException("targetIp must be set");
+		}
+		
 		Client.sendMessageToIp(targetIp, toJson());
 		
 		User targetUser;

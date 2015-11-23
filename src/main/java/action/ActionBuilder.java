@@ -22,7 +22,7 @@ public class ActionBuilder {
 		}
 		
 		if(fakeAction.action.equals("reply")){
-			return mapper.readValue(json, ReplyAction.class);
+			return mapper.readValue(json, KeepAliveAction.class);
 		}
 		
 		if(fakeAction.action.equals("say")){

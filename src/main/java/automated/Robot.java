@@ -6,7 +6,6 @@ import action.ActionBuilder;
 import io.OutputHandler;
 import main.Application;
 import payload.AbstractAction;
-import payload.AbstractTargetedAction;
 import user.User;
 import user.UserManager;
 
@@ -66,15 +65,14 @@ public class Robot implements Runnable {
 					AbstractAction action = ActionBuilder.buildFromJson(json);
 					
 					if(action.getClass().getName().equals("payload.WhisperAction")){
-						AbstractTargetedAction targetedAction = (AbstractTargetedAction) action;
-						targetedAction.setTargetIp(user.getAddress());
-						targetedAction.send();
-					}else{
-						action.send();
+						action.setTargetIp(user.getAddress());
 					}
 					
+					action.send();
+					
+					
 				} catch (Exception e) {
-					e.printStackTrace();
+					OutputHandler.error("Um erro ocorreu", e);
 				}
 			}
 			

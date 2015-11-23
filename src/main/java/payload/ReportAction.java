@@ -1,5 +1,7 @@
 package payload;
 
+import java.security.InvalidParameterException;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import io.OutputHandler;
@@ -9,7 +11,7 @@ import user.UnknownUser;
 import user.User;
 import user.UserManager;
 
-public class ReportAction extends AbstractTargetedAction {
+public class ReportAction extends AbstractAction {
 	public String message;
 	
 	@Override
@@ -25,6 +27,10 @@ public class ReportAction extends AbstractTargetedAction {
 
 	@Override
 	public void send() throws JsonProcessingException {
+		if(targetIp == null){
+			throw new InvalidParameterException("targetIp must be set");
+		}
+		
 		Client.sendMessageToIp(targetIp, toJson());
 		
 		OutputHandler.out(Application.getUser().getNickname() + " reportou um erro: " + message);

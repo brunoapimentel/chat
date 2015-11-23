@@ -22,11 +22,11 @@ public class SearchAction extends AbstractAction {
 			OutputHandler.out(user.getNickname() + " entrou na sala");
 		}
 		
-		ReplyAction replyAction = new ReplyAction();
-		replyAction.setTargetIp(senderIp);
-		replyAction.nickname = Application.getUser().getNickname();
+		KeepAliveAction keepAliveAction = new KeepAliveAction();
+		keepAliveAction.setTargetIp(senderIp);
+		
 		try {
-			replyAction.send();
+			keepAliveAction.send();
 		} catch (JsonProcessingException e) {
 			OutputHandler.error("Um erro ocorreu", e);
 		}

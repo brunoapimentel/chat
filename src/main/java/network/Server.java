@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import action.ActionBuilder;
 import io.OutputHandler;
 import main.Application;
+import payload.AbstractAction;
 import payload.ReportAction;
 
 public class Server implements Runnable {
@@ -19,7 +20,6 @@ public class Server implements Runnable {
 	public void run() {
 		OutputHandler.log("Starting server on port " + Application.getPort());
 
-		
 			DatagramSocket dsocket;
 			try {
 				dsocket = new DatagramSocket(Application.getPort());
@@ -45,16 +45,22 @@ public class Server implements Runnable {
 				OutputHandler.log("Received from " + packet.getAddress().getHostAddress() + ": " + message );
 				
 				try {
-					ActionBuilder.buildFromJson(message).receive(packet.getAddress().getHostAddress());
+					AbstractAction action = ActionBuilder.buildFromJson(message);
+					
+					if(action == null){
+						reportError("Ação inválida!");
+					}
+					
+					action.receive(packet.getAddress().getHostAddress());
 				} catch (JsonParseException e) {
 					reportError("JSON mal formado!");
 				} catch (JsonMappingException e) {
 					reportError("Não foi possível mapear o JSON!");
 				} catch (IOException e) {
+					dsocket.close();
 					OutputHandler.error("Um erro ocorreu", e);
 				}			
 			}
-		
 
 	}
 	

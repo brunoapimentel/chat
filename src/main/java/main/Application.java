@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import automated.Robot;
 import automated.SearchRepeater;
-import io.InputHandler;
 import io.OutputHandler;
 import network.Server;
 import user.User;
@@ -16,8 +15,8 @@ public class Application {
 	private static Thread searcher;
 	
 	public static void main(String args[]) throws JsonProcessingException{
-		client = new Thread(new InputHandler());
-		//client = new Thread(new Robot());
+		//client = new Thread(new InputHandler());
+		client = new Thread(new Robot());
 		server = new Thread(new Server());
 		searcher = new Thread(new SearchRepeater());
 		
