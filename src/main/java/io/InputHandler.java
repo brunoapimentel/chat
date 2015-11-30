@@ -33,11 +33,17 @@ public class InputHandler implements Runnable {
 		}
 
 		OutputHandler.log("User input: " + input);
+		
+		String[] parts = input.split("|");
 
-		User user = UserManager.getUserAtIndex(0);
+		User user = UserManager.findByAddress(parts[0]);
 
+		if(user == null){
+			OutputHandler.log("Usuário não encontrado. A mensagem não será enviada");
+		}
+		
 		try {
-			OutputHandler.log("Sending message: '" + input + "' to " + user.getAddress());
+			OutputHandler.log("Sending message: '" + parts[1] + "' to " + user.getAddress());
 			AbstractAction action = ActionBuilder.buildFromJson(input);
 
 			if (action.getClass().getName().equals("payload.WhisperAction")) {

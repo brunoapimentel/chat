@@ -49,6 +49,7 @@ public class Server implements Runnable {
 					
 					if(action == null){
 						reportError("Ação inválida!", packet.getAddress().getHostAddress());
+						continue;
 					}
 					
 					action.receive(packet.getAddress().getHostAddress());

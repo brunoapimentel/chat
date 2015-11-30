@@ -21,7 +21,7 @@ public class Application {
 
 	public static void main(String args[]) throws JsonProcessingException {
 		//client = new Thread(new InputHandler());
-		 client = new Thread(new Robot());
+		client = new Thread(new Robot());
 		server = new Thread(new Server());
 		searcher = new Thread(new SearchRepeater());
 
@@ -65,6 +65,11 @@ public class Application {
 
 	public static int getLogLevel() {
 		return Config.logLevel;
+	}
+	
+	public static void initConfigForTests(){
+		String[] args = {};
+		Config.init(args);
 	}
 
 	public static class Config {

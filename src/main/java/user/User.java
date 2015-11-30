@@ -3,6 +3,7 @@ package user;
 public class User {
 	private String nickname;
 	private String address;
+	private long timestamp;
 	
 	public User(){
 		
@@ -24,5 +25,12 @@ public class User {
 	}
 	public void setAddress(String address) {
 		this.address = address;
+	}
+	public long getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(long timestamp) {
+		this.timestamp = timestamp;
 	}
 }

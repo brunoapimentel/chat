@@ -8,10 +8,13 @@ import io.OutputHandler;
 import main.Application;
 import payload.KeepAliveAction;
 import payload.SearchAction;
+import user.User;
 import user.UserManager;
 
 public class SearchRepeater implements Runnable {
 
+	public static final long MAX_IDLE_TIME = 60000;
+	
 	public void run() {
 		while (true) {
 			if(UserManager.listIsEmpty()){
@@ -55,13 +58,24 @@ public class SearchRepeater implements Runnable {
 		while (! UserManager.listIsEmpty()) {
 			try {
 				keepAliveAction.send();
+				removeIdleUsers();
 			} catch (JsonProcessingException e) {
 				OutputHandler.log("Error sending search action: can't parse json");
 			}
 
-			TimeUnit.SECONDS.sleep(10);
+			TimeUnit.SECONDS.sleep(1);
 		}
 
+	}
+	
+	private void removeIdleUsers(){
+		for(User user: UserManager.getArray()){
+			
+			if(user.getTimestamp() + MAX_IDLE_TIME < System.currentTimeMillis()){
+				UserManager.removeByAddress(user.getAddress());
+				OutputHandler.out("Removendo " + user.getNickname() + " por inatividade.");
+			}
+		}
 	}
 
 }

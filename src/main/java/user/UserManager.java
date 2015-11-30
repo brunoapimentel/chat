@@ -18,6 +18,7 @@ public class UserManager {
 			return false;
 		}
 
+		user.setTimestamp(System.currentTimeMillis());
 		users.add(user);
 		
 		OutputHandler.log("Added user " + user.getAddress() + " " + user.getNickname() + " to list.");
@@ -72,4 +73,15 @@ public class UserManager {
 	public static User[] getArray(){
 		return users.toArray(new User[users.size()]);
 	}
+	
+	public static boolean updateTimestamp(String address){
+		User user = findByAddress(address);
+		
+		if(user == null){
+			return false;
+		}
+		
+		user.setTimestamp(System.currentTimeMillis());
+		return true;
+	} 
 }
