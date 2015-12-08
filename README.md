@@ -4,6 +4,7 @@ Chat para aula de Sistemas Distribuídos - FATEC Carapicuiba - Prof. Luquini - 2
 <ul>
   <li><a href="https://github.com/andbreder/Chat_C-">Anderson Breder</li>
   <li><a href="https://github.com/felipej26/Chat_UDP">Jefferson Felipe</li>
+  <li><a href="https://github.com/MichaelSantosSim/ChatSistemasDistribuidos">Michael dos Santos Sim</li>
 </ul>
 
 <h1>Especificação</h1>
